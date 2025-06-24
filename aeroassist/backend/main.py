@@ -17,8 +17,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",  # Local development
-        # Add your production frontend URL here after deployment
+        "http://localhost:3000", 
+        "https://aeroassist-chatbot-frontend.onrender.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
