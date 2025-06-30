@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { Database } from '@kit/supabase/database';
 import { Button } from '@kit/ui/button';
 import {
   Form,
@@ -19,7 +18,10 @@ import { Trans } from '@kit/ui/trans';
 import { useUpdateAccountData } from '../hooks/use-update-account';
 import { AccountDetailsSchema } from '../schema/account-details.schema';
 
-type UpdateUserDataParams = Database['public']['Tables']['accounts']['Update'];
+type UpdateUserDataParams = {
+  name?: string;
+  picture_url?: string | null;
+};
 
 export function UpdateAccountDetailsForm({
   displayName,

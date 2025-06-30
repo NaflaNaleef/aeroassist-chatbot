@@ -63,7 +63,18 @@
     "dashboard": "Dashboard",
     "settings": "Settings",
     "profile": "Profile",
-    "application": "Application"
+    "application": "Application",
+    "flights": "Flights",
+    "support": "Support",
+    "searchFlights": "Search Flights",
+    "myBookings": "My Bookings",
+    "flightStatus": "Flight Status",
+    "checkIn": "Check In",
+    "aiAssistant": "AI Assistant",
+    "paymentMethods": "Payment Methods",
+    "generalSettings": "General Settings",
+    "themeSettings": "Theme Settings",
+    "preferences": "Preferences"
   },
   "roles": {
     "owner": {
@@ -74,7 +85,7 @@
     }
   },
   "cookieBanner": {
-    "title": "Hey, we use cookies \uD83C\uDF6A",
+    "title": "Hey, we use cookies 🍪",
     "description": "This website uses cookies to ensure you get the best experience on our website.",
     "reject": "Reject",
     "accept": "Accept"

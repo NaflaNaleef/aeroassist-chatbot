@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useSupabase } from '@kit/supabase/hooks/use-supabase';
+import { useUser } from '@kit/supabase/hooks/use-user';
 
 export function usePersonalAccountData(
   userId: string,
@@ -13,44 +14,34 @@ export function usePersonalAccountData(
   },
 ) {
   const client = useSupabase();
+  const { data: user } = useUser();
   const queryKey = ['account:data', userId];
 
   const queryFn = async () => {
-    if (!userId) {
+    if (!userId || !user) {
       return null;
     }
 
-    const response = await client
-      .from('accounts')
-      .select(
-        `
-        id,
-        name,
-        picture_url
-    `,
-      )
-      .eq('id', userId)
-      .single();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
+    // Use user data from auth instead of accounts table
+    return {
+      id: user.id,
+      name: user.user_metadata?.name || user.email?.split('@')[0] || '',
+      picture_url: user.user_metadata?.avatar_url || null,
+    };
   };
 
   return useQuery({
     queryKey,
     queryFn,
-    enabled: !!userId,
+    enabled: !!userId && !!user,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     initialData: partialAccount?.id
       ? {
-          id: partialAccount.id,
-          name: partialAccount.name,
-          picture_url: partialAccount.picture_url,
-        }
+        id: partialAccount.id,
+        name: partialAccount.name,
+        picture_url: partialAccount.picture_url,
+      }
       : undefined,
   });
 }

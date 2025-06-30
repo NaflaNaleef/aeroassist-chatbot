@@ -71,13 +71,11 @@ function UploadProfileAvatarForm(props: {
           removeExistingStorageFile().then(() =>
             uploadUserProfilePhoto(client, file, props.userId)
               .then((pictureUrl) => {
-                return client
-                  .from('accounts')
-                  .update({
-                    picture_url: pictureUrl,
-                  })
-                  .eq('id', props.userId)
-                  .throwOnError();
+                return client.auth.updateUser({
+                  data: {
+                    avatar_url: pictureUrl,
+                  }
+                });
               })
               .then(() => {
                 props.onAvatarUpdated();
@@ -89,13 +87,11 @@ function UploadProfileAvatarForm(props: {
         const promise = () =>
           removeExistingStorageFile()
             .then(() => {
-              return client
-                .from('accounts')
-                .update({
-                  picture_url: null,
-                })
-                .eq('id', props.userId)
-                .throwOnError();
+              return client.auth.updateUser({
+                data: {
+                  avatar_url: null,
+                }
+              });
             })
             .then(() => {
               props.onAvatarUpdated();

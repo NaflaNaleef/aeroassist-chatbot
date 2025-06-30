@@ -8,7 +8,7 @@ import { Database } from '@kit/supabase/database';
  * @param {SupabaseClient<Database>} client - The Supabase client instance.
  */
 class AccountsApi {
-  constructor(private readonly client: SupabaseClient<Database>) {}
+  constructor(private readonly client: SupabaseClient<Database>) { }
 
   /**
    * @name getAccount
@@ -16,17 +16,18 @@ class AccountsApi {
    * @param id
    */
   async getAccount(id: string) {
-    const { data, error } = await this.client
-      .from('accounts')
-      .select('*')
-      .eq('id', id)
-      .single();
+    // Get user data from auth instead of accounts table
+    const { data: { user }, error } = await this.client.auth.getUser();
 
-    if (error) {
-      throw error;
+    if (error || !user) {
+      throw error || new Error('User not found');
     }
 
-    return data;
+    return {
+      id: user.id,
+      name: user.user_metadata?.name || user.email?.split('@')[0] || '',
+      picture_url: user.user_metadata?.avatar_url || null,
+    };
   }
 }
 

@@ -1,9 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { Database } from '@kit/supabase/database';
 import { useSupabase } from '@kit/supabase/hooks/use-supabase';
 
-type UpdateData = Database['public']['Tables']['accounts']['Update'];
+type UpdateData = {
+  name?: string;
+  picture_url?: string | null;
+};
 
 export function useUpdateAccountData(accountId: string) {
   const client = useSupabase();
@@ -11,15 +13,23 @@ export function useUpdateAccountData(accountId: string) {
   const mutationKey = ['account:data', accountId];
 
   const mutationFn = async (data: UpdateData) => {
-    const response = await client.from('accounts').update(data).match({
-      id: accountId,
+    // Update user metadata instead of accounts table
+    const { data: userData, error } = await client.auth.updateUser({
+      data: {
+        name: data.name,
+        avatar_url: data.picture_url,
+      }
     });
 
-    if (response.error) {
-      throw response.error;
+    if (error) {
+      throw error;
     }
 
-    return response.data;
+    return {
+      id: userData.user?.id,
+      name: userData.user?.user_metadata?.name || userData.user?.email?.split('@')[0] || '',
+      picture_url: userData.user?.user_metadata?.avatar_url || null,
+    };
   };
 
   return useMutation({
